@@ -84,12 +84,25 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
    * Soru Yükleme Effect Hook'u
    * 
    * Slug değiştiğinde ilgili konunun sorularını yükler.
-   * İlk 20 soruyu alarak quiz'i oluşturur.
+   * Mevcut soru havuzundan rastgele 20 soru seçer.
    */
   useEffect(() => {
     const q = questions[params.slug] || [];
-    // İlk 20 soruyu al (quiz süresi için optimum sayı)
-    const quizQuestions = q.slice(0, 20);
+    
+    // Rastgele soru seçimi için Fisher-Yates shuffle algoritması
+    const shuffleArray = (array: Question[]) => {
+      const shuffled = [...array]; // Orijinal diziyi korumak için kopyala
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+
+    // Soruları karıştır ve ilk 20'sini al
+    const shuffledQuestions = shuffleArray(q);
+    const quizQuestions = shuffledQuestions.slice(0, Math.min(20, shuffledQuestions.length));
+    
     setTopicQuestions(quizQuestions);
   }, [params.slug]);
 
