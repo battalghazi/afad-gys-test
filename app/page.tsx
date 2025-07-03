@@ -145,8 +145,8 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
-        <div className="flex items-center justify-between h-16 px-6 border-b">
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col h-screen`}>
+        <div className="flex items-center justify-between h-16 px-6 border-b flex-shrink-0">
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg">
               <GraduationCap className="h-6 w-6 text-white" />
@@ -161,8 +161,8 @@ export default function HomePage() {
           </button>
         </div>
         
-        <nav className="mt-6 px-3">
-          <div className="space-y-1 mb-6">
+        <nav className="flex-1 flex flex-col mt-6 px-3 pb-6 overflow-y-auto">
+          <div className="space-y-1 mb-6 flex-shrink-0">
             <a href="#ana-sayfa" className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg">
               <Home className="mr-3 h-5 w-5" />
               Ana Sayfa
@@ -178,7 +178,7 @@ export default function HomePage() {
           </div>
 
           {/* Topic Categories */}
-          <div className="border-t pt-4">
+          <div className="border-t pt-4 flex-1">
             <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Konu Kategorileri
             </h3>
@@ -227,7 +227,7 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
+          <div className="mt-auto p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex-shrink-0">
             <div className="text-center">
               <Trophy className="h-8 w-8 text-blue-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900 mb-1">Günlük Hedef</p>
@@ -241,7 +241,7 @@ export default function HomePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-64">
         {/* Mobile Header */}
         <header className="lg:hidden bg-white shadow-sm border-b">
           <div className="flex items-center justify-between px-4 py-3">
