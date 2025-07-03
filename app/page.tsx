@@ -3,44 +3,64 @@
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BookOpen, Trophy, Users, CheckCircle, GraduationCap, Award, Menu, X, Home, Clock, BarChart3 } from 'lucide-react';
+import { ArrowRight, BookOpen, Trophy, Users, CheckCircle, GraduationCap, Award, Menu, X, Home, Clock, BarChart3, ChevronDown, ChevronRight, Scale, FileText, Building2, Shield, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 
 const topics = [
-    { id: 'anayasa', title: 'Türkiye Cumhuriyeti Anayasası' },
-    { id: 'ataturk', title: 'Atatürk İlkeleri ve İnkılap Tarihi' },
-    { id: 'turkce', title: 'Türkçe ve Dil Bilgisi' },
-    { id: '5902', title: '5902 Sayılı Kanun' },
-    { id: '7269', title: '7269 Sayılı Kanun' },
-    { id: '4123', title: '4123 Sayılı Kanun' },
-    { id: '7126', title: '7126 Sayılı Sivil Savunma Kanunu' },
-    { id: '4', title: '4 Sayılı Cumhurbaşkanlığı Kararnamesi' },
-    { id: 'afet-yonetim-merkezleri', title: 'Afet ve Acil Durum Yönetim Merkezleri Yönetmeliği' },
-    { id: 'afet-mudahale-hizmetleri', title: 'Afet ve Acil Durum Müdahale Hizmetleri Yönetmeliği' },
-    { id: 'afet-harcamalari', title: 'Afet ve Acil Durum Harcamaları Yönetmeliği' },
-    { id: 'afetlerin-genel-hayata-etkililigi', title: 'Afetlerin Genel Hayata Etkililiğine İlişkin Yönetmelik' },
-    { id: 'buyuksehir-belediyeleri-harcamalar', title: 'Büyükşehir Belediyeleri Harcama Yönetmeliği' },
-    { id: 'binalarin-yangindan-korunmasi', title: 'Binaların Yangından Korunması Hakkında Yönetmelik' },
-    { id: 'afad-personeli-gorevde-yukselme', title: 'AFAD Personeli Görevde Yükselme Yönetmeliği' },
-    { id: '657', title: '657 Sayılı Devlet Memurları Kanunu' },
-    { id: '4982', title: '4982 Sayılı Bilgi Edinme Hakkı Kanunu' },
-    { id: '3071', title: '3071 Sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun' },
-    { id: '5018', title: '5018 Sayılı Kamu Mali Yönetimi ve Kontrol Kanunu' },
-    { id: '6245', title: '6245 Sayılı Harcırah Kanunu' },
-    { id: '3628', title: '3628 Sayılı Mal Bildiriminde Bulunulması Kanunu' },
-    { id: '4483', title: '4483 Sayılı Memurların Yargılanması Hakkında Kanun' },
-    { id: '2577', title: '2577 Sayılı İdari Yargılama Usulü Kanunu' },
-    { id: '6331', title: '6331 Sayılı İş Sağlığı ve Güvenliği Kanunu' },
-    { id: '5442', title: '5442 Sayılı İl İdaresi Kanunu' },
-    { id: 'devlet-memurlari-disiplin', title: 'Devlet Memurları Disiplin Yönetmeliği' },
-    { id: 'resmi-yazismalar', title: 'Resmî Yazışmalarda Uygulanacak Usul ve Esaslar' },
-    { id: 'devlet-memurlari-sikayet', title: 'Devlet Memurlarının Şikayet ve Müracaatları Yönetmeliği' },
-    { id: 'kamu-gorevlileri-etik', title: 'Kamu Görevlileri Etik Davranış İlkeleri Yönetmeliği' },
-    { id: 'devlet-memurlari-hastalik-raporlari', title: 'Devlet Memurları Hastalık Raporları Yönetmeliği' },
+    { id: 'anayasa', title: 'Türkiye Cumhuriyeti Anayasası', category: 'temel' },
+    { id: 'ataturk', title: 'Atatürk İlkeleri ve İnkılap Tarihi', category: 'temel' },
+    { id: 'turkce', title: 'Türkçe ve Dil Bilgisi', category: 'temel' },
+    { id: '5902', title: '5902 Sayılı Kanun', category: 'afet' },
+    { id: '7269', title: '7269 Sayılı Kanun', category: 'afet' },
+    { id: '4123', title: '4123 Sayılı Kanun', category: 'afet' },
+    { id: '7126', title: '7126 Sayılı Sivil Savunma Kanunu', category: 'afet' },
+    { id: '4', title: '4 Sayılı Cumhurbaşkanlığı Kararnamesi', category: 'afet' },
+    { id: 'afet-yonetim-merkezleri', title: 'Afet ve Acil Durum Yönetim Merkezleri Yönetmeliği', category: 'yonetmelik' },
+    { id: 'afet-mudahale-hizmetleri', title: 'Afet ve Acil Durum Müdahale Hizmetleri Yönetmeliği', category: 'yonetmelik' },
+    { id: 'afet-harcamalari', title: 'Afet ve Acil Durum Harcamaları Yönetmeliği', category: 'yonetmelik' },
+    { id: 'afetlerin-genel-hayata-etkililigi', title: 'Afetlerin Genel Hayata Etkililiğine İlişkin Yönetmelik', category: 'yonetmelik' },
+    { id: 'buyuksehir-belediyeleri-harcamalar', title: 'Büyükşehir Belediyeleri Harcama Yönetmeliği', category: 'yonetmelik' },
+    { id: 'binalarin-yangindan-korunmasi', title: 'Binaların Yangından Korunması Hakkında Yönetmelik', category: 'yonetmelik' },
+    { id: 'afad-personeli-gorevde-yukselme', title: 'AFAD Personeli Görevde Yükselme Yönetmeliği', category: 'personel' },
+    { id: '657', title: '657 Sayılı Devlet Memurları Kanunu', category: 'personel' },
+    { id: '4982', title: '4982 Sayılı Bilgi Edinme Hakkı Kanunu', category: 'personel' },
+    { id: '3071', title: '3071 Sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun', category: 'personel' },
+    { id: '5018', title: '5018 Sayılı Kamu Mali Yönetimi ve Kontrol Kanunu', category: 'personel' },
+    { id: '6245', title: '6245 Sayılı Harcırah Kanunu', category: 'personel' },
+    { id: '3628', title: '3628 Sayılı Mal Bildiriminde Bulunulması Kanunu', category: 'personel' },
+    { id: '4483', title: '4483 Sayılı Memurların Yargılanması Hakkında Kanun', category: 'personel' },
+    { id: '2577', title: '2577 Sayılı İdari Yargılama Usulü Kanunu', category: 'personel' },
+    { id: '6331', title: '6331 Sayılı İş Sağlığı ve Güvenliği Kanunu', category: 'personel' },
+    { id: '5442', title: '5442 Sayılı İl İdaresi Kanunu', category: 'personel' },
+    { id: 'devlet-memurlari-disiplin', title: 'Devlet Memurları Disiplin Yönetmeliği', category: 'personel' },
+    { id: 'resmi-yazismalar', title: 'Resmî Yazışmalarda Uygulanacak Usul ve Esaslar', category: 'personel' },
+    { id: 'devlet-memurlari-sikayet', title: 'Devlet Memurlarının Şikayet ve Müracaatları Yönetmeliği', category: 'personel' },
+    { id: 'kamu-gorevlileri-etik', title: 'Kamu Görevlileri Etik Davranış İlkeleri Yönetmeliği', category: 'personel' },
+    { id: 'devlet-memurlari-hastalik-raporlari', title: 'Devlet Memurları Hastalık Raporları Yönetmeliği', category: 'personel' },
 ];
+
+const categories = {
+  temel: { name: 'Temel Bilgiler', icon: Scale, color: 'blue' },
+  afet: { name: 'Afet Mevzuatı', icon: Shield, color: 'red' },
+  yonetmelik: { name: 'Yönetmelikler', icon: FileText, color: 'green' },
+  personel: { name: 'Personel Mevzuatı', icon: UserCheck, color: 'purple' }
+};
 
 export default function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [openCategories, setOpenCategories] = useState<string[]>(['temel']); // Temel bilgiler başlangıçta açık
+
+  const toggleCategory = (categoryId: string) => {
+    setOpenCategories(prev => 
+      prev.includes(categoryId) 
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
+  const getTopicsByCategory = (categoryId: string) => {
+    return topics.filter(topic => topic.category === categoryId);
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -62,7 +82,7 @@ export default function HomePage() {
         </div>
         
         <nav className="mt-6 px-3">
-          <div className="space-y-1">
+          <div className="space-y-1 mb-6">
             <a href="#ana-sayfa" className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg">
               <Home className="mr-3 h-5 w-5" />
               Ana Sayfa
@@ -75,6 +95,56 @@ export default function HomePage() {
               <BarChart3 className="mr-3 h-5 w-5" />
               İstatistikler
             </a>
+          </div>
+
+          {/* Topic Categories */}
+          <div className="border-t pt-4">
+            <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Konu Kategorileri
+            </h3>
+            <div className="space-y-1">
+              {Object.entries(categories).map(([categoryId, category]) => {
+                const isOpen = openCategories.includes(categoryId);
+                const categoryTopics = getTopicsByCategory(categoryId);
+                const Icon = category.icon;
+                
+                return (
+                  <div key={categoryId}>
+                    <button
+                      onClick={() => toggleCategory(categoryId)}
+                      className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center">
+                        <Icon className={`mr-3 h-4 w-4 text-${category.color}-600`} />
+                        <span>{category.name}</span>
+                        <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full bg-${category.color}-100 text-${category.color}-600`}>
+                          {categoryTopics.length}
+                        </span>
+                      </div>
+                      {isOpen ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </button>
+                    
+                    {isOpen && (
+                      <div className="ml-6 mt-1 space-y-1">
+                        {categoryTopics.map((topic) => (
+                          <a 
+                            key={topic.id} 
+                            href={`/quiz/${topic.id}`}
+                            className="block px-3 py-1.5 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors line-clamp-2"
+                          >
+                            {topic.title}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
           
           <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
