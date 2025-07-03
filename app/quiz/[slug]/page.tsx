@@ -1,3 +1,19 @@
+/**
+ * Quiz Sayfası Bileşeni
+ * 
+ * Dinamik quiz uygulaması. URL parametresinden aldığı konu slug'ına göre
+ * ilgili soruları yükler ve interaktif bir sınav deneyimi sunar.
+ * 
+ * Özellikler:
+ * - 20 dakikalık zamanlayıcı
+ * - Soruları teker teker cevaplama
+ * - Gerçek zamanlı ilerleme takibi
+ * - Sınav sonrası detaylı sonuç raporu
+ * - Responsive tasarım
+ * - Her sorunun doğru cevabı ve açıklaması
+ * 
+ * Route: /quiz/[slug] (örn: /quiz/anayasa, /quiz/5902)
+ */
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -8,89 +24,165 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Clock, Trophy, RotateCcw, Home, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
+/**
+ * Quiz Cevap Interface'i
+ * 
+ * Kullanıcının verdiği her cevap için gerekli bilgileri tutar.
+ * 
+ * @property questionIndex - Sorunun index numarası (0'dan başlar)
+ * @property selectedAnswer - Kullanıcının seçtiği cevap metni
+ * @property isCorrect - Cevabın doğru olup olmadığı (boolean)
+ */
 interface QuizAnswer {
   questionIndex: number;
   selectedAnswer: string;
   isCorrect: boolean;
 }
 
+/**
+ * Quiz Sayfası Ana Bileşeni
+ * 
+ * Dynamic routing ile gelen slug parametresine göre quiz sayfasını render eder.
+ * Zamanlayıcı, soru-cevap yönetimi, sonuç hesaplama gibi tüm quiz mantığını içerir.
+ * 
+ * @param params - Next.js dynamic route parametreleri
+ * @param params.slug - Konu slug'ı (URL'den gelir)
+ */
 export default function QuizPage({ params }: { params: { slug: string } }) {
-  const [topicQuestions, setTopicQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<QuizAnswer[]>([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(20 * 60); // 20 minutes in seconds
-  const [isTimeUp, setIsTimeUp] = useState(false);
+  // State Yönetimi
+  const [topicQuestions, setTopicQuestions] = useState<Question[]>([]);      // Quiz soruları
+  const [answers, setAnswers] = useState<QuizAnswer[]>([]);                 // Kullanıcı cevapları
+  const [isSubmitted, setIsSubmitted] = useState(false);                    // Sınav bitiş durumu
+  const [timeLeft, setTimeLeft] = useState(20 * 60);                        // Kalan süre (saniye)
+  const [isTimeUp, setIsTimeUp] = useState(false);                          // Süre doldu mu?
 
-  // Timer effect
+  /**
+   * Zamanlayıcı Effect Hook'u
+   * 
+   * Her saniye kalan süreyi 1 azaltır.
+   * Süre 0'a ulaştığında sınavı otomatik olarak bitirir.
+   * Sınav bittiğinde veya süre dolduğunda timer'ı durdurur.
+   */
   useEffect(() => {
     if (isSubmitted || isTimeUp) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          setIsTimeUp(true);
-          setIsSubmitted(true);
+          setIsTimeUp(true);      // Süre doldu flag'ini set et
+          setIsSubmitted(true);   // Sınavı otomatik bitir
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timer);  // Cleanup: Timer'ı temizle
   }, [isSubmitted, isTimeUp]);
 
+  /**
+   * Soru Yükleme Effect Hook'u
+   * 
+   * Slug değiştiğinde ilgili konunun sorularını yükler.
+   * İlk 20 soruyu alarak quiz'i oluşturur.
+   */
   useEffect(() => {
     const q = questions[params.slug] || [];
-    // Take first 20 questions
+    // İlk 20 soruyu al (quiz süresi için optimum sayı)
     const quizQuestions = q.slice(0, 20);
     setTopicQuestions(quizQuestions);
   }, [params.slug]);
 
+  /**
+   * Zaman Formatlama Fonksiyonu
+   * 
+   * Saniye cinsinden gelen süreyi MM:SS formatına çevirir.
+   * 
+   * @param seconds - Saniye cinsinden süre
+   * @returns MM:SS formatında string (örn: "05:30")
+   */
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  /**
+   * Cevap İşleme Fonksiyonu
+   * 
+   * Kullanıcı bir soruya cevap verdiğinde çalışır.
+   * Cevabın doğruluğunu kontrol eder ve state'i günceller.
+   * 
+   * @param questionIndex - Cevaplanacak sorunun index'i
+   * @param selectedAnswer - Kullanıcının seçtiği cevap
+   */
   const handleAnswer = (questionIndex: number, selectedAnswer: string) => {
-    if (isSubmitted) return;
+    if (isSubmitted) return; // Sınav bitmişse cevap kabul edilmez
 
     const question = topicQuestions[questionIndex];
-    const isCorrect = selectedAnswer === question.answer;
+    const isCorrect = selectedAnswer === question.answer; // Doğruluk kontrolü
 
     setAnswers(prev => {
       const existing = prev.find(a => a.questionIndex === questionIndex);
       if (existing) {
+        // Daha önce cevaplanmış soruyu güncelle
         return prev.map(a => 
           a.questionIndex === questionIndex 
             ? { ...a, selectedAnswer, isCorrect }
             : a
         );
       }
+      // Yeni cevap ekle
       return [...prev, { questionIndex, selectedAnswer, isCorrect }];
     });
   };
 
+  /**
+   * Sınav Bitirme Fonksiyonu
+   * 
+   * Kullanıcı "Sınavı Bitir" butonuna bastığında çalışır.
+   * Sınavı sonlandırır ve sonuç ekranına geçer.
+   */
   const handleSubmit = () => {
     setIsSubmitted(true);
   };
 
+  /**
+   * Sınavı Yeniden Başlatma Fonksiyonu
+   * 
+   * Tüm state'leri sıfırlar ve sınavı baştan başlatır.
+   * Sonuç ekranından tekrar sınava dönmek için kullanılır.
+   */
   const handleRestart = () => {
-    setAnswers([]);
-    setIsSubmitted(false);
-    setTimeLeft(20 * 60);
-    setIsTimeUp(false);
+    setAnswers([]);           // Tüm cevapları sil
+    setIsSubmitted(false);    // Sınav durumunu sıfırla
+    setTimeLeft(20 * 60);     // Süreyi yeniden 20 dakika yap
+    setIsTimeUp(false);       // Süre doldu flag'ini sıfırla
   };
 
+  /**
+   * Belirli Bir Soru İçin Cevap Getirme Fonksiyonu
+   * 
+   * Verilen index'e sahip sorunun kullanıcı cevabını bulur.
+   * 
+   * @param questionIndex - Sorunun index'i
+   * @returns QuizAnswer | undefined
+   */
   const getAnswerForQuestion = (questionIndex: number) => {
     return answers.find(a => a.questionIndex === questionIndex);
   };
 
-  const score = answers.filter(a => a.isCorrect).length;
-  const answeredCount = answers.length;
-  const progressPercentage = (answeredCount / topicQuestions.length) * 100;
-  const topicTitle = getTopicTitle(params.slug);
+  // Hesaplanan değerler (her render'da güncellenir)
+  const score = answers.filter(a => a.isCorrect).length;              // Doğru cevap sayısı
+  const answeredCount = answers.length;                               // Toplam cevaplanan soru sayısı
+  const progressPercentage = (answeredCount / topicQuestions.length) * 100; // İlerleme yüzdesi
+  const topicTitle = getTopicTitle(params.slug);                      // Konunun başlığı
 
+  /**
+   * Yükleme Durumu
+   * 
+   * Sorular henüz yüklenmemişse loading ekranı gösterir.
+   */
   if (topicQuestions.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
@@ -391,23 +483,52 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
   );
 }
 
-// Helper function to get topic title
+/**
+ * Konu Başlığı Getirme Yardımcı Fonksiyonu
+ * 
+ * URL slug'ından konu başlığını döndürür.
+ * Ana sayfada gösterilen konu listesi ile quiz sayfası arasında tutarlılık sağlar.
+ * 
+ * @param slug - URL'den gelen konu tanımlayıcısı
+ * @returns Konunun tam başlığı (bulunamazsa 'Quiz' döner)
+ * 
+ * @example
+ * getTopicTitle('anayasa') → 'Türkiye Cumhuriyeti Anayasası'
+ * getTopicTitle('5902') → '5902 Sayılı Afet ve Acil Durum Yönetimi Kanunu'
+ */
 function getTopicTitle(slug: string): string {
+  /**
+   * Konu Başlıkları Haritası
+   * 
+   * Her slug için karşılık gelen tam başlığı tutar.
+   * Kategoriler:
+   * - Temel konular: Anayasa, Atatürk, Türkçe
+   * - Kanunlar: Sayılı kanunlar (5902, 7269, vs.)
+   * - Yönetmelikler: Uygulama yönetmelikleri
+   * - Personel mevzuatı: Memur hakları ve sorumlulukları
+   */
   const topicTitles: Record<string, string> = {
+    // Temel Bilgiler
     'anayasa': 'Türkiye Cumhuriyeti Anayasası',
     'ataturk': 'Atatürk İlkeleri ve İnkılap Tarihi',
     'turkce': 'Türkçe ve Dil Bilgisi',
+    
+    // Afet Mevzuatı - Kanunlar
     '5902': '5902 Sayılı Afet ve Acil Durum Yönetimi Kanunu',
     '7269': '7269 Sayılı Kanun',
     '4123': '4123 Sayılı Kanun',
     '7126': '7126 Sayılı Sivil Savunma Kanunu',
     '4': '4 Sayılı Cumhurbaşkanlığı Kararnamesi',
+    
+    // Yönetmelikler
     'afet-yonetim-merkezleri': 'Afet ve Acil Durum Yönetim Merkezleri Yönetmeliği',
     'afet-mudahale-hizmetleri': 'Afet ve Acil Durum Müdahale Hizmetleri Yönetmeliği',
     'afet-harcamalari': 'Afet ve Acil Durum Harcamaları Yönetmeliği',
     'afetlerin-genel-hayata-etkililigi': 'Afetlerin Genel Hayata Etkililiğine İlişkin Yönetmelik',
     'buyuksehir-belediyeleri-harcamalar': 'Büyükşehir Belediyeleri Harcama Yönetmeliği',
     'binalarin-yangindan-korunmasi': 'Binaların Yangından Korunması Hakkında Yönetmelik',
+    
+    // Personel Mevzuatı
     'afad-personeli-gorevde-yukselme': 'AFAD Personeli Görevde Yükselme Yönetmeliği',
     '657': '657 Sayılı Devlet Memurları Kanunu',
     '4982': '4982 Sayılı Bilgi Edinme Hakkı Kanunu',

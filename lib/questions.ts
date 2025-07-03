@@ -1,4 +1,26 @@
 
+/**
+ * Soru Veritabanı ve Tipleri
+ * 
+ * AFAD GYS (Görevde Yükselme Sınavı) hazırlık uygulaması için
+ * soru tiplerini ve soru veritabanını içerir.
+ * 
+ * Bu dosya:
+ * - Soru tiplerini tanımlar (TypeScript interface)
+ * - Tüm kategoriler için soruları barındırır
+ * - Konulara göre organize edilmiş soru koleksiyonları sağlar
+ */
+
+/**
+ * Soru Tipi (Interface)
+ * 
+ * Her sorunun sahip olması gereken özellikler:
+ * 
+ * @property question - Soru metni (zorunlu)
+ * @property options - Çoktan seçmeli şıklar dizisi (zorunlu, minimum 2 şık)
+ * @property answer - Doğru cevap (options dizisindeki değerlerden biri olmalı)
+ * @property explanation - Cevabın açıklaması (opsiyonel, eğitim amaçlı)
+ */
 export type Question = {
   question: string;
   options: string[];
@@ -6,6 +28,28 @@ export type Question = {
   explanation?: string;
 };
 
+/**
+ * Soru Veritabanı
+ * 
+ * Konu slug'larına göre organize edilmiş soru koleksiyonu.
+ * Her konu anahtarı (slug) bir Question dizisi içerir.
+ * 
+ * Kategoriler:
+ * 1. Temel Bilgiler (anayasa, ataturk, turkce)
+ * 2. Afet Mevzuatı (5902, 7269, 4123, 7126, 4)
+ * 3. Yönetmelikler (afet-*, binalarin-*, buyuksehir-*)
+ * 4. Personel Mevzuatı (657, 4982, 3071, vb.)
+ * 
+ * Her soru:
+ * - Açık ve anlaşılır soru metni
+ * - 5 çoktan seçmeli şık
+ * - Doğru cevap
+ * - Açıklayıcı bilgi (öğrenmeyi desteklemek için)
+ * 
+ * @example
+ * const anayasaSorulari = questions['anayasa'];
+ * const rastgeleSoru = questions['anayasa'][0];
+ */
 export const questions: Record<string, Question[]> = {
   anayasa: [
     {

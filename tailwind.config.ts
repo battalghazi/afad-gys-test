@@ -1,14 +1,61 @@
+/**
+ * Tailwind CSS Konfigürasyonu
+ * 
+ * Bu dosya Tailwind CSS'in nasıl çalışacağını belirler.
+ * Custom renkler, dark mode ayarları, content path'leri ve plugin'ler burada tanımlanır.
+ * 
+ * Shadcn/ui ile uyumlu bir konfigürasyon kullanır.
+ * CSS değişkenleri (custom properties) ile dinamik theming destekler.
+ */
 import type { Config } from "tailwindcss";
 
+/**
+ * Ana Tailwind Konfigürasyonu
+ */
 const config: Config = {
+    /**
+     * Dark Mode Konfigürasyonu
+     * 
+     * "class" stratejisi kullanır - dark mode'u manuel olarak .dark class'ı ile kontrol eder.
+     * Alternatifler: "media" (sistem temasını takip eder)
+     */
     darkMode: ["class"],
+    
+    /**
+     * Content Path'leri
+     * 
+     * Tailwind CSS'in hangi dosyalarda sınıf arayacağını belirtir.
+     * Bu path'lerdeki dosyalar scan edilir ve kullanılan sınıflar final CSS'e dahil edilir.
+     * Unused sınıflar otomatik olarak çıkarılır (tree-shaking).
+     */
     content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",      // Pages directory (eski Next.js yapısı)
+    "./components/**/*.{js,ts,jsx,tsx,mdx}", // Components directory
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",        // App directory (yeni Next.js yapısı)
   ],
+  
+  /**
+   * Tema Konfigürasyonu
+   */
   theme: {
+  	/**
+   	 * Varsayılan tema uzantıları
+   	 * 
+   	 * Tailwind'in varsayılan değerlerini korur ve üzerine eklemeler yapar.
+   	 */
   	extend: {
+  		/**
+  		 * Özel Renk Paleti
+  		 * 
+  		 * CSS değişkenlerini kullanarak dinamik renkler tanımlar.
+  		 * Bu sayede light/dark tema arasında geçiş yaparken renkler otomatik değişir.
+  		 * 
+  		 * Format: hsl(var(--variable-name))
+  		 * HSL kullanmanın avantajları:
+  		 * - Daha intuitive (hue, saturation, lightness)
+  		 * - Alpha channel kolayca eklenebilir
+  		 * - Renk varyasyonları oluşturmak daha kolay
+  		 */
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

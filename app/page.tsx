@@ -1,3 +1,24 @@
+/**
+ * Ana Sayfa Bileşeni (Home Page)
+ * 
+ * AFAD GYS Hazırlık uygulamasının ana sayfası.
+ * Kullanıcıların quiz konularını kategorilere göre seçebileceği ana arayüz.
+ * 
+ * Özellikler:
+ * - Responsive sidebar navigasyon
+ * - Kategorilere göre gruplandırılmış konular
+ * - Açılır/kapanır kategori menüleri
+ * - Mobil uyumlu hamburger menü
+ * - İstatistik kartları ve özellik tanıtımları
+ * - Modern gradient tasarım
+ * 
+ * Kullanılan Teknolojiler:
+ * - React Hooks (useState)
+ * - Next.js Link (client-side routing)
+ * - Lucide React icons
+ * - Tailwind CSS
+ * - Custom UI components
+ */
 'use client';
 
 import Link from 'next/link';
@@ -6,6 +27,20 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, Trophy, Users, CheckCircle, GraduationCap, Award, Menu, X, Home, Clock, BarChart3, ChevronDown, ChevronRight, Scale, FileText, Building2, Shield, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 
+/**
+ * Quiz Konuları Veritabanı
+ * 
+ * AFAD GYS sınavında çıkan tüm konuları kategorilere göre organize eder.
+ * Her konu bir id (slug), başlık ve kategori içerir.
+ * 
+ * Konular 4 ana kategoride toplanır:
+ * 1. Temel Bilgiler: Anayasa, Atatürk İlkeleri, Türkçe
+ * 2. Afet Mevzuatı: AFAD ile ilgili kanunlar
+ * 3. Yönetmelikler: Uygulama yönetmelikleri
+ * 4. Personel Mevzuatı: Memur hakları ve sorumlulukları
+ * 
+ * id değerleri URL slug'ı olarak kullanılır (/quiz/[slug])
+ */
 const topics = [
     { id: 'anayasa', title: 'Türkiye Cumhuriyeti Anayasası', category: 'temel' },
     { id: 'ataturk', title: 'Atatürk İlkeleri ve İnkılap Tarihi', category: 'temel' },
@@ -39,6 +74,19 @@ const topics = [
     { id: 'devlet-memurlari-hastalik-raporlari', title: 'Devlet Memurları Hastalık Raporları Yönetmeliği', category: 'personel' },
 ];
 
+/**
+ * Kategori Konfigürasyonu
+ * 
+ * Her kategori için görsel ve renk bilgilerini tanımlar.
+ * Sidebar'da kategori başlıklarında kullanılır.
+ * 
+ * Her kategori içerir:
+ * - name: Görüntülenen kategori adı
+ * - icon: Lucide React icon bileşeni
+ * - color: Tema rengi (CSS sınıfları için)
+ * 
+ * Renkler Tailwind CSS color palette'ini takip eder.
+ */
 const categories = {
   temel: { name: 'Temel Bilgiler', icon: Scale, color: 'blue' },
   afet: { name: 'Afet Mevzuatı', icon: Shield, color: 'red' },
@@ -46,18 +94,50 @@ const categories = {
   personel: { name: 'Personel Mevzuatı', icon: UserCheck, color: 'purple' }
 };
 
+/**
+ * Ana Sayfa Bileşeni (HomePage)
+ * 
+ * Uygulamanın ana sayfası. Kullanıcıların quiz konularını seçebileceği
+ * responsive arayüzü sağlar.
+ * 
+ * State Yönetimi:
+ * - sidebarOpen: Mobil cihazlarda sidebar'ın açık/kapalı durumu
+ * - openCategories: Açık kategorilerin listesi (accordion davranışı)
+ * 
+ * Başlangıç durumu: 'temel' kategorisi açık
+ */
 export default function HomePage() {
+  // Sidebar durumu (mobil cihazlar için)
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [openCategories, setOpenCategories] = useState<string[]>(['temel']); // Temel bilgiler başlangıçta açık
+  
+  // Açık kategoriler (accordion navigasyon için)
+  // Temel bilgiler kategorisi varsayılan olarak açık
+  const [openCategories, setOpenCategories] = useState<string[]>(['temel']);
 
+  /**
+   * Kategori Açma/Kapama Fonksiyonu
+   * 
+   * Belirli bir kategoriyi açar veya kapatır.
+   * Eğer kategori açıksa kapatır, kapalıysa açar.
+   * 
+   * @param categoryId - Açılacak/kapatılacak kategori ID'si
+   */
   const toggleCategory = (categoryId: string) => {
     setOpenCategories(prev => 
       prev.includes(categoryId) 
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
+        ? prev.filter(id => id !== categoryId)  // Kategori açıksa kapat
+        : [...prev, categoryId]                 // Kategori kapalıysa aç
     );
   };
 
+  /**
+   * Kategoriye Göre Konu Filtreleme Fonksiyonu
+   * 
+   * Belirli bir kategorideki tüm konuları döndürür.
+   * 
+   * @param categoryId - Filtrelenecek kategori ID'si
+   * @returns Kategoriye ait konular dizisi
+   */
   const getTopicsByCategory = (categoryId: string) => {
     return topics.filter(topic => topic.category === categoryId);
   };
