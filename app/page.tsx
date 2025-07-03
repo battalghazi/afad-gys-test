@@ -342,12 +342,12 @@ export default function HomePage() {
                 {topics.map((topic, index) => (
                   <Link href={`/quiz/${topic.id}`} key={topic.id} passHref legacyBehavior>
                     <a className="block h-full group">
-                      <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200 bg-white group-hover:border-blue-300 relative overflow-hidden">
-                        <CardHeader className="p-1.5 sm:p-2 md:p-3 text-center">
-                          <div className="p-1 sm:p-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-md sm:rounded-lg mb-1 mx-auto w-fit group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
+                      <Card className="h-32 sm:h-36 md:h-40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200 bg-white group-hover:border-blue-300 relative overflow-hidden flex flex-col">
+                        <CardHeader className="p-2 sm:p-3 md:p-4 text-center flex-1 flex flex-col justify-center">
+                          <div className="p-1 sm:p-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-md sm:rounded-lg mb-2 mx-auto w-fit group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
                             <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
                           </div>
-                          <CardTitle className="text-xs sm:text-sm md:text-base lg:text-lg leading-tight font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-300 line-clamp-2">
+                          <CardTitle className="text-xs sm:text-sm md:text-sm lg:text-base leading-tight font-medium text-gray-900 group-hover:text-blue-700 transition-colors duration-300 line-clamp-3 px-1">
                             {topic.title}
                           </CardTitle>
                         </CardHeader>

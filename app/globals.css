@@ -60,6 +60,20 @@ body {
   }
   
   /**
+   * Line Clamp-3 Utility
+   * 
+   * Metni 3 satırla sınırlar ve overflow durumunda "..." ekler.
+   * Uzun kart başlıkları için kullanılır.
+   */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /**
    * Float Animasyonu
    * 
    * Element'i yavaşça yukarı-aşağı hareket ettirir.
