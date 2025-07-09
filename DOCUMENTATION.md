@@ -156,7 +156,7 @@ const progressPercentage = (answeredCount / topicQuestions.length) * 100;
 / → Ana sayfa (konu listesi)
 /quiz/[slug] → Quiz sayfası
   - /quiz/anayasa → Anayasa quiz'i
-  - /quiz/5902 → 5902 sayılı kanun quiz'i
+  - /quiz/besbindokuzyuziki → 5902 sayılı kanun quiz'i
   - vs.
 ```
 

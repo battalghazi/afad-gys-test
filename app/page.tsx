@@ -45,7 +45,7 @@ const topics = [
     { id: 'anayasa', title: 'Türkiye Cumhuriyeti Anayasası', category: 'temel' },
     { id: 'ataturk', title: 'Atatürk İlkeleri ve İnkılap Tarihi', category: 'temel' },
     { id: 'turkce', title: 'Türkçe ve Dil Bilgisi', category: 'temel' },
-    { id: '5902', title: '5902 Sayılı Kanun', category: 'afet' },
+    { id: 'besbindokuzyuziki', title: '5902 Sayılı Kanun', category: 'afet' },
     { id: '7269', title: '7269 Sayılı Kanun', category: 'afet' },
     { id: '4123', title: '4123 Sayılı Kanun', category: 'afet' },
     { id: '7126', title: '7126 Sayılı Sivil Savunma Kanunu', category: 'afet' },

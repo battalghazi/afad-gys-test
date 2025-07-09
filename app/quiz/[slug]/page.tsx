@@ -12,12 +12,12 @@
  * - Responsive tasarım
  * - Her sorunun doğru cevabı ve açıklaması
  * 
- * Route: /quiz/[slug] (örn: /quiz/anayasa, /quiz/5902)
+ * Route: /quiz/[slug] (örn: /quiz/anayasa, /quiz/besbindokuzyuziki)
  */
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { questions, Question } from '@/lib/questions';
+import { Question } from '@/lib/questions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -83,27 +83,26 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
   /**
    * Soru Yükleme Effect Hook'u
    * 
-   * Slug değiştiğinde ilgili konunun sorularını yükler.
-   * Mevcut soru havuzundan rastgele 20 soru seçer.
+   * Slug değiştiğinde ilgili konunun sorularını API'den yükler.
    */
   useEffect(() => {
-    const q = questions[params.slug] || [];
-    
-    // Rastgele soru seçimi için Fisher-Yates shuffle algoritması
-    const shuffleArray = (array: Question[]) => {
-      const shuffled = [...array]; // Orijinal diziyi korumak için kopyala
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    const loadQuestions = async () => {
+      try {
+        const response = await fetch(`/api/questions/${params.slug}`);
+        if (response.ok) {
+          const questions = await response.json();
+          setTopicQuestions(questions);
+        } else {
+          console.error('Failed to load questions');
+          setTopicQuestions([]);
+        }
+      } catch (error) {
+        console.error('Error loading questions:', error);
+        setTopicQuestions([]);
       }
-      return shuffled;
     };
 
-    // Soruları karıştır ve ilk 20'sini al
-    const shuffledQuestions = shuffleArray(q);
-    const quizQuestions = shuffledQuestions.slice(0, Math.min(20, shuffledQuestions.length));
-    
-    setTopicQuestions(quizQuestions);
+    loadQuestions();
   }, [params.slug]);
 
   /**
@@ -507,7 +506,7 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
  * 
  * @example
  * getTopicTitle('anayasa') → 'Türkiye Cumhuriyeti Anayasası'
- * getTopicTitle('5902') → '5902 Sayılı Afet ve Acil Durum Yönetimi Kanunu'
+ * getTopicTitle('besbindokuzyuziki') → '5902 Sayılı Afet ve Acil Durum Yönetimi Kanunu'
  */
 function getTopicTitle(slug: string): string {
   /**
@@ -516,7 +515,7 @@ function getTopicTitle(slug: string): string {
    * Her slug için karşılık gelen tam başlığı tutar.
    * Kategoriler:
    * - Temel konular: Anayasa, Atatürk, Türkçe
-   * - Kanunlar: Sayılı kanunlar (5902, 7269, vs.)
+   * - Kanunlar: Sayılı kanunlar (besbindokuzyuziki, 7269, vs.)
    * - Yönetmelikler: Uygulama yönetmelikleri
    * - Personel mevzuatı: Memur hakları ve sorumlulukları
    */
@@ -527,7 +526,7 @@ function getTopicTitle(slug: string): string {
     'turkce': 'Türkçe ve Dil Bilgisi',
     
     // Afet Mevzuatı - Kanunlar
-    '5902': '5902 Sayılı Afet ve Acil Durum Yönetimi Kanunu',
+    'besbindokuzyuziki': '5902 Sayılı Afet ve Acil Durum Yönetimi Kanunu',
     '7269': '7269 Sayılı Kanun',
     '4123': '4123 Sayılı Kanun',
     '7126': '7126 Sayılı Sivil Savunma Kanunu',
